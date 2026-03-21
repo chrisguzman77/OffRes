@@ -1,0 +1,127 @@
+{
+  "type": "FeatureCollection",
+  "region": "Nashville, TN Metro Area",
+  "last_updated": "2024-01-15T00:00:00Z",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [-86.7816, 36.1627] },
+      "properties": {
+        "id": "hosp-001",
+        "name": "Vanderbilt University Medical Center",
+        "category": "hospital",
+        "description": "Level 1 Trauma Center. Full ER services.",
+        "address": "1211 Medical Center Dr, Nashville, TN 37232",
+        "status": "open"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [-86.7680, 36.1540] },
+      "properties": {
+        "id": "hosp-002",
+        "name": "TriStar Centennial Medical Center",
+        "category": "hospital",
+        "description": "Full service hospital with emergency department.",
+        "address": "2300 Patterson St, Nashville, TN 37203",
+        "status": "open"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [-86.7844, 36.1622] },
+      "properties": {
+        "id": "shelter-001",
+        "name": "Centennial Sportsplex Emergency Shelter",
+        "category": "shelter",
+        "description": "Red Cross emergency shelter. Capacity 500. Pet-friendly area available.",
+        "address": "222 25th Ave N, Nashville, TN 37203",
+        "status": "open"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [-86.7526, 36.1665] },
+      "properties": {
+        "id": "shelter-002",
+        "name": "Nashville Fairgrounds Emergency Shelter",
+        "category": "shelter",
+        "description": "Large capacity emergency shelter. Cots and meals provided.",
+        "address": "625 Smith Ave, Nashville, TN 37203",
+        "status": "open"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [-86.7903, 36.1554] },
+      "properties": {
+        "id": "water-001",
+        "name": "Centennial Park Water Distribution",
+        "category": "water",
+        "description": "Bottled water distribution point. Open 8 AM - 6 PM.",
+        "address": "2500 West End Ave, Nashville, TN 37203",
+        "status": "open"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [-86.7407, 36.1745] },
+      "properties": {
+        "id": "water-002",
+        "name": "East Nashville Community Center Water Point",
+        "category": "water",
+        "description": "Water and basic supply distribution.",
+        "address": "700 Woodland St, Nashville, TN 37206",
+        "status": "open"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [-86.7731, 36.1696] },
+      "properties": {
+        "id": "aid-001",
+        "name": "FEMA Disaster Recovery Center",
+        "category": "aid",
+        "description": "FEMA assistance registration. Bring ID and insurance info.",
+        "address": "601 Commerce St, Nashville, TN 37203",
+        "status": "open"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [-86.7673, 36.1830] },
+      "properties": {
+        "id": "aid-002",
+        "name": "Salvation Army Distribution Center",
+        "category": "aid",
+        "description": "Food, clothing, and hygiene supplies. No ID required.",
+        "address": "631 Dickerson Pike, Nashville, TN 37207",
+        "status": "open"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [-86.8100, 36.1400] },
+      "properties": {
+        "id": "safe-001",
+        "name": "Belle Meade Safe Zone",
+        "category": "safe_zone",
+        "description": "Designated high-ground safe zone. No flooding risk.",
+        "address": "Belle Meade area, Nashville, TN",
+        "status": "open"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [-86.7200, 36.1450] },
+      "properties": {
+        "id": "safe-002",
+        "name": "Berry Hill Elevated Safe Zone",
+        "category": "safe_zone",
+        "description": "Elevated area above flood plain. Community gathering point.",
+        "address": "Berry Hill, Nashville, TN",
+        "status": "open"
+      }
+    }
+  ]
+}
