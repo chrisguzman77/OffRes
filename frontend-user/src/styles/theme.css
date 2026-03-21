@@ -1,0 +1,49 @@
+/*
+ * DisasterPi Terminal Theme
+ * Inspired by Pip-Boy / Fallout terminal aesthetics.
+ * Green monochrome CRT look with modern usability.
+ * Original design — not a direct copy.
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;500;600;700&display=swap');
+
+:root {
+  /* Core green palette */
+  --terminal-green: #00ff41;
+  --terminal-green-dim: #00cc33;
+  --terminal-green-dark: #00801f;
+  --terminal-green-glow: rgba(0, 255, 65, 0.15);
+  --terminal-green-subtle: rgba(0, 255, 65, 0.05);
+
+  /* Backgrounds */
+  --bg-primary: #050a05;
+  --bg-secondary: #0a120a;
+  --bg-card: #0d160d;
+  --bg-input: #081008;
+  --bg-hover: rgba(0, 255, 65, 0.08);
+
+  /* Text */
+  --text-primary: #00ff41;
+  --text-secondary: #00cc33;
+  --text-dim: #008020;
+
+  /* Status colors — still green-ish variants */
+  --success: #00ff41;
+  --warning: #ccff00;
+  --error: #ff3333;
+  --info: #33ffcc;
+
+  /* Borders */
+  --border: #00401a;
+  --border-bright: #00802f;
+
+  /* Fonts */
+  --font-mono: 'Share Tech Mono', 'Courier New', monospace;
+  --font-display: 'Rajdhani', 'Share Tech Mono', monospace;
+
+  /* Effects */
+  --glow: 0 0 10px rgba(0, 255, 65, 0.3), 0 0 20px rgba(0, 255, 65, 0.1);
+  --glow-strong: 0 0 10px rgba(0, 255, 65, 0.5), 0 0 30px rgba(0, 255, 65, 0.2), 0 0 50px rgba(0, 255, 65, 0.1);
+  --radius: 4px;
+  --scanline-opacity: 0.03;
+}

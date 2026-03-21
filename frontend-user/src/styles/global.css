@@ -1,0 +1,297 @@
+@import './theme.css';
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* CRT Scanline overlay effect */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 9999;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, var(--scanline-opacity)) 2px,
+    rgba(0, 0, 0, var(--scanline-opacity)) 4px
+  );
+}
+
+/* Subtle screen flicker */
+@keyframes flicker {
+  0%, 100% { opacity: 1; }
+  92% { opacity: 1; }
+  93% { opacity: 0.97; }
+  94% { opacity: 1; }
+}
+
+body {
+  font-family: var(--font-mono);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  min-height: 100vh;
+  animation: flicker 8s infinite;
+  -webkit-font-smoothing: none; /* Intentionally pixelated feel */
+  overflow-x: hidden;
+}
+
+/* Container */
+.container {
+  max-width: 1024px;
+  margin: 0 auto;
+  padding: 12px 16px;
+}
+
+/* Headings */
+h1 {
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  color: var(--terminal-green);
+  text-shadow: var(--glow);
+  margin-bottom: 16px;
+}
+
+h2 {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--terminal-green-dim);
+  margin-bottom: 12px;
+}
+
+/* Cards */
+.terminal-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 12px;
+  position: relative;
+}
+
+.terminal-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--terminal-green-dark), transparent);
+}
+
+/* Buttons */
+.btn-terminal {
+  display: inline-block;
+  padding: 12px 24px;
+  background: transparent;
+  border: 1px solid var(--terminal-green);
+  border-radius: var(--radius);
+  color: var(--terminal-green);
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.2s;
+  width: 100%;
+  text-align: center;
+}
+
+.btn-terminal:hover {
+  background: var(--terminal-green);
+  color: var(--bg-primary);
+  box-shadow: var(--glow);
+}
+
+.btn-terminal:active {
+  transform: scale(0.98);
+}
+
+.btn-terminal:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.btn-terminal:disabled:hover {
+  background: transparent;
+  color: var(--terminal-green);
+  box-shadow: none;
+}
+
+/* Inputs */
+.terminal-input {
+  width: 100%;
+  padding: 12px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--terminal-green);
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.terminal-input:focus {
+  border-color: var(--terminal-green);
+  box-shadow: var(--glow);
+}
+
+.terminal-input::placeholder {
+  color: var(--text-dim);
+}
+
+/* Textarea */
+.terminal-textarea {
+  width: 100%;
+  padding: 12px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--terminal-green);
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  resize: vertical;
+  min-height: 100px;
+  outline: none;
+}
+
+.terminal-textarea:focus {
+  border-color: var(--terminal-green);
+}
+
+/* Status indicators */
+.status-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 6px;
+}
+
+.status-dot.online { background: var(--success); box-shadow: 0 0 6px var(--success); }
+.status-dot.offline { background: var(--error); box-shadow: 0 0 6px var(--error); }
+.status-dot.pending { background: var(--warning); box-shadow: 0 0 6px var(--warning); }
+
+/* Dividers */
+.terminal-divider {
+  border: none;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border-bright), transparent);
+  margin: 16px 0;
+}
+
+/* Navigation */
+.nav-bar {
+  display: flex;
+  gap: 0;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+
+.nav-item {
+  flex: 1;
+  padding: 14px 8px;
+  background: transparent;
+  border: none;
+  border-right: 1px solid var(--border);
+  color: var(--text-dim);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+}
+
+.nav-item:last-child {
+  border-right: none;
+}
+
+.nav-item:hover {
+  color: var(--terminal-green);
+  background: var(--bg-hover);
+}
+
+.nav-item.active {
+  color: var(--bg-primary);
+  background: var(--terminal-green);
+  font-weight: bold;
+}
+
+/* Loading animation */
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+.cursor-blink::after {
+  content: '¦';
+  animation: blink 1s infinite;
+  margin-left: 2px;
+}
+
+/* QR Code display */
+.qr-container {
+  display: flex;
+  justify-content: center;
+  padding: 16px;
+  background: var(--bg-primary);
+  border-radius: var(--radius);
+}
+
+.qr-container img {
+  max-width: 250px;
+  border: 2px solid var(--terminal-green);
+  border-radius: var(--radius);
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-bright);
+  border-radius: 3px;
+}
+
+/* Map overrides for Leaflet */
+.leaflet-container {
+  background: var(--bg-primary) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: var(--radius) !important;
+}
+
+.leaflet-popup-content-wrapper {
+  background: var(--bg-card) !important;
+  color: var(--terminal-green) !important;
+  border: 1px solid var(--border) !important;
+  font-family: var(--font-mono) !important;
+  border-radius: var(--radius) !important;
+}
+
+.leaflet-popup-tip {
+  background: var(--bg-card) !important;
+}
