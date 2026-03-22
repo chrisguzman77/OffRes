@@ -21,11 +21,11 @@ interface MapData {
 }
 
 const categoryColors: Record<string, string> = {
-  hospital: '#ff4444',
-  shelter: '#4488ff',
-  water: '#44bbff',
-  aid: '#ffaa00',
-  safe_zone: '#00ff41',
+  hospital: '#f87171',
+  shelter: '#60a5fa',
+  water: '#38bdf8',
+  aid: '#f5b73a',
+  safe_zone: '#34d399',
 };
 
 const categoryLabels: Record<string, string> = {
@@ -37,7 +37,7 @@ const categoryLabels: Record<string, string> = {
 };
 
 function createIcon(category: string): L.DivIcon {
-  const color = categoryColors[category] || '#00ff41';
+  const color = categoryColors[category] || '#34d399';
   return L.divIcon({
     className: '',
     html: `<div style="
@@ -97,7 +97,7 @@ export default function MapView() {
       marker.bindPopup(`
         <div style="font-size: 13px;">
           <strong>${point.name}</strong><br/>
-          <span style="color: ${categoryColors[point.category] || '#fff'};">
+          <span style="color: ${categoryColors[point.category] || '#0f172a'};">
             ${categoryLabels[point.category] || point.category}
           </span><br/>
           ${point.description ? `<em>${point.description}</em><br/>` : ''}
@@ -119,24 +119,20 @@ export default function MapView() {
 
   return (
     <div>
-      <h1>Offline Map</h1>
+      <h1 className="page-title-mobile-only">
+        Explore resources <span className="text-highlight">near you</span>
+      </h1>
+      <p className="page-subtitle" style={{ color: 'var(--text-muted)', marginBottom: '16px', maxWidth: '48ch' }}>
+        Shelters, hospitals, water, and safe zones — cached for offline use.
+      </p>
 
-      <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap', marginBottom: '12px' }}>
+      <div className="map-filter-bar">
         {['all', 'hospital', 'shelter', 'water', 'aid', 'safe_zone'].map((cat) => (
           <button
             key={cat}
+            type="button"
+            className={`map-filter-btn${filter === cat ? ' active' : ''}`}
             onClick={() => setFilter(cat)}
-            style={{
-              padding: '6px 12px',
-              background: filter === cat ? 'var(--terminal-green)' : 'var(--bg-card)',
-              color: filter === cat ? 'var(--bg-primary)' : 'var(--text-secondary)',
-              border: '1px solid var(--border)',
-              borderRadius: 'var(--radius)',
-              fontFamily: 'var(--font-mono)',
-              fontSize: '0.75rem',
-              cursor: 'pointer',
-              textTransform: 'uppercase',
-            }}
           >
             {cat === 'all' ? 'All' : categoryLabels[cat] || cat}
           </button>
@@ -146,16 +142,17 @@ export default function MapView() {
       <div
         ref={mapContainer}
         style={{
-          height: '450px',
+          height: 'min(52vh, 520px)',
           width: '100%',
-          borderRadius: 'var(--radius)',
+          borderRadius: 'var(--radius-xl)',
           border: '1px solid var(--border)',
+          overflow: 'hidden',
         }}
       />
 
       <div className="terminal-card" style={{ marginTop: '12px' }}>
-        <h2>[ Legend ]</h2>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
+        <h2>Legend</h2>
+        <div className="map-legend-grid">
           {Object.entries(categoryColors).map(([cat, color]) => (
             <div key={cat} style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.8rem' }}>
               <div style={{

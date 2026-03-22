@@ -62,10 +62,10 @@ export default function Scanner({ onScan, isActive }: ScannerProps) {
       <style>{`
         #qr-reader {
           width: 100% !important;
-          max-width: 400px !important;
+          max-width: 100% !important;
           margin: 0 auto !important;
-          border: 2px solid var(--accent) !important;
-          border-radius: var(--radius) !important;
+          border: 2px solid var(--brand) !important;
+          border-radius: var(--radius-md) !important;
           overflow: hidden !important;
         }
         #qr-reader video {
@@ -78,7 +78,7 @@ export default function Scanner({ onScan, isActive }: ScannerProps) {
           display: none !important;
         }
         #qr-shaded-region {
-          border-color: rgba(88, 166, 255, 0.5) !important;
+          border-color: rgba(85, 72, 217, 0.45) !important;
         }
       `}</style>
       <div id="qr-reader" />

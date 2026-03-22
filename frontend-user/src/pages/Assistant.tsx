@@ -16,6 +16,8 @@ interface ChatMessage {
   model?: string;
 }
 
+const bubbleRadius = 'var(--radius-lg)';
+
 export default function Assistant() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState('');
@@ -69,134 +71,149 @@ export default function Assistant() {
 
   return (
     <div>
-      <h1>Assistant</h1>
+      <h1 className="page-title-mobile-only">
+        Ask anything <span className="text-highlight">offline</span>
+      </h1>
+      <p className="page-subtitle" style={{ color: 'var(--text-muted)', fontSize: '1rem', marginBottom: '20px', maxWidth: '50ch' }}>
+        Safety and preparedness answers from the model on this device — no cloud required.
+      </p>
 
-      <div className="terminal-card" style={{ marginBottom: '12px' }}>
-        <h2 style={{ fontSize: '0.85rem', marginBottom: '8px' }}>[ Disaster chatbot ]</h2>
-        <p style={{ fontSize: '0.75rem', color: 'var(--text-dim)', lineHeight: 1.5, margin: 0 }}>
-          Connected to your local model via{' '}
-          <code style={{ color: 'var(--terminal-green-dim)' }}>POST /llm/ask</code>
-          . Ask preparedness and safety questions; answers may use RAG context when available.
-        </p>
-      </div>
+      <div className="assistant-layout-wide">
+        <div>
+          <div className="terminal-card feature-card--sky" style={{ marginBottom: '16px' }}>
+            <h2>Disaster chatbot</h2>
+            <p style={{ fontSize: '0.95rem', color: 'var(--text-muted)', lineHeight: 1.55, margin: 0 }}>
+              Connected via <span className="code-inline">POST /llm/ask</span>. RAG may add local context when
+              available.
+            </p>
+          </div>
+        </div>
 
-      <div
-        className="terminal-card"
-        style={{
-          minHeight: '220px',
-          maxHeight: 'min(50vh, 420px)',
-          overflowY: 'auto',
-          marginBottom: '12px',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '12px',
-        }}
-      >
-        {messages.length === 0 && !loading && (
-          <p style={{ fontSize: '0.8rem', color: 'var(--text-dim)', margin: 0 }}>
-            No messages yet. Try: &quot;What should I do during a flood?&quot;
-          </p>
-        )}
-
-        {messages.map((m, i) => (
+        <div>
           <div
-            key={`${i}-${m.role}-${m.content.slice(0, 24)}`}
+            className="terminal-card"
             style={{
-              alignSelf: m.role === 'user' ? 'flex-end' : 'flex-start',
-              maxWidth: '92%',
+              minHeight: '200px',
+              maxHeight: 'min(52vh, 480px)',
+              overflowY: 'auto',
+              marginBottom: '16px',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '14px',
             }}
           >
-            <div
-              style={{
-                fontSize: '0.65rem',
-                color: 'var(--text-dim)',
-                textTransform: 'uppercase',
-                marginBottom: '4px',
-                letterSpacing: '0.05em',
-              }}
-            >
-              {m.role === 'user' ? 'You' : 'LLM'}
-            </div>
-            <div
-              style={{
-                padding: '10px 12px',
-                borderRadius: 'var(--radius)',
-                border: '1px solid var(--border)',
-                background:
-                  m.role === 'user' ? 'var(--bg-secondary)' : 'rgba(0, 255, 136, 0.06)',
-                fontSize: '0.85rem',
-                lineHeight: 1.5,
-                whiteSpace: 'pre-wrap',
-                wordBreak: 'break-word',
-                fontFamily: m.role === 'assistant' ? 'var(--font-body)' : 'inherit',
-              }}
-            >
-              {m.content}
-            </div>
-            {m.role === 'assistant' && (m.model || m.context_used) && (
+            {messages.length === 0 && !loading && (
+              <p style={{ fontSize: '0.95rem', color: 'var(--text-dim)', margin: 0 }}>
+                No messages yet. Try: &quot;What should I do during a flood?&quot;
+              </p>
+            )}
+
+            {messages.map((m, i) => (
               <div
+                key={`${i}-${m.role}-${m.content.slice(0, 24)}`}
                 style={{
-                  marginTop: '6px',
-                  fontSize: '0.65rem',
-                  color: 'var(--text-dim)',
-                  fontFamily: 'var(--font-mono)',
+                  alignSelf: m.role === 'user' ? 'flex-end' : 'flex-start',
+                  maxWidth: '94%',
                 }}
               >
-                {m.model && <span>model: {m.model}</span>}
-                {m.model && m.context_used && <span> · </span>}
-                {m.context_used && <span>context: {m.context_used}</span>}
+                <div
+                  style={{
+                    fontSize: '0.68rem',
+                    color: 'var(--text-dim)',
+                    fontWeight: 700,
+                    textTransform: 'uppercase',
+                    marginBottom: '6px',
+                    letterSpacing: '0.06em',
+                  }}
+                >
+                  {m.role === 'user' ? 'You' : 'Assistant'}
+                </div>
+                <div
+                  style={{
+                    padding: '14px 16px',
+                    borderRadius: bubbleRadius,
+                    border: '1px solid var(--border)',
+                    background: m.role === 'user' ? 'var(--surface-elevated)' : 'var(--accent-teal-muted)',
+                    fontSize: '0.92rem',
+                    lineHeight: 1.55,
+                    whiteSpace: 'pre-wrap',
+                    wordBreak: 'break-word',
+                    fontFamily: 'var(--font-body)',
+                    color: 'var(--text-body)',
+                    boxShadow: 'var(--shadow-sm)',
+                  }}
+                >
+                  {m.content}
+                </div>
+                {m.role === 'assistant' && (m.model || m.context_used) && (
+                  <div
+                    style={{
+                      marginTop: '8px',
+                      fontSize: '0.68rem',
+                      color: 'var(--text-dim)',
+                      fontFamily: 'var(--font-mono)',
+                    }}
+                  >
+                    {m.model && <span>model: {m.model}</span>}
+                    {m.model && m.context_used && <span> · </span>}
+                    {m.context_used && <span>context: {m.context_used}</span>}
+                  </div>
+                )}
+              </div>
+            ))}
+
+            {loading && (
+              <div style={{ alignSelf: 'flex-start' }}>
+                <div
+                  style={{
+                    fontSize: '0.68rem',
+                    color: 'var(--text-dim)',
+                    fontWeight: 700,
+                    textTransform: 'uppercase',
+                    marginBottom: '6px',
+                    letterSpacing: '0.06em',
+                  }}
+                >
+                  Assistant
+                </div>
+                <div
+                  style={{
+                    padding: '14px 16px',
+                    borderRadius: bubbleRadius,
+                    border: '2px dashed var(--border-bright)',
+                    fontSize: '0.92rem',
+                    background: 'var(--surface-elevated)',
+                  }}
+                >
+                  <LoadingDots />
+                </div>
               </div>
             )}
+
+            <div ref={bottomRef} />
           </div>
-        ))}
 
-        {loading && (
-          <div style={{ alignSelf: 'flex-start' }}>
-            <div
-              style={{
-                fontSize: '0.65rem',
-                color: 'var(--text-dim)',
-                textTransform: 'uppercase',
-                marginBottom: '4px',
-              }}
+          <div className="terminal-card" style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            <input
+              className="terminal-input"
+              type="text"
+              placeholder="Ask a question…"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={onKeyDown}
+              disabled={loading}
+              style={{ width: '100%', boxSizing: 'border-box' }}
+            />
+            <button
+              type="button"
+              className="btn-terminal"
+              onClick={() => void handleSubmit()}
+              disabled={loading || !input.trim()}
             >
-              LLM
-            </div>
-            <div
-              style={{
-                padding: '10px 12px',
-                borderRadius: 'var(--radius)',
-                border: '1px dashed var(--border-bright)',
-                fontSize: '0.85rem',
-              }}
-            >
-              <LoadingDots />
-            </div>
+              Send
+            </button>
           </div>
-        )}
-
-        <div ref={bottomRef} />
-      </div>
-
-      <div className="terminal-card" style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-        <input
-          className="terminal-input"
-          type="text"
-          placeholder="Ask a question…"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyDown={onKeyDown}
-          disabled={loading}
-          style={{ width: '100%', boxSizing: 'border-box' }}
-        />
-        <button
-          type="button"
-          className="btn-terminal"
-          onClick={() => void handleSubmit()}
-          disabled={loading || !input.trim()}
-        >
-          Send
-        </button>
+        </div>
       </div>
     </div>
   );

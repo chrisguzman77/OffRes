@@ -90,75 +90,81 @@ export default function Wallet() {
 
   return (
     <div>
-      <h1>Wallet</h1>
+      <h1 className="page-title-mobile-only">Wallet</h1>
 
       {/* Balance */}
-      <div className="terminal-card" style={{ textAlign: 'center' }}>
-        <div style={{ fontSize: '0.7rem', color: 'var(--text-dim)', textTransform: 'uppercase' }}>
-          Available Balance
+      <div className="terminal-card lead" style={{ textAlign: 'center' }}>
+        <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+          Available balance
         </div>
-        <div style={{
-          fontSize: '2.5rem',
-          fontWeight: 'bold',
-          fontFamily: 'var(--font-display)',
-          color: 'var(--terminal-green)',
-          textShadow: 'var(--glow-strong)',
-          margin: '8px 0',
-        }}>
+        <div
+          className="amount-display"
+          style={{
+            fontSize: '2.75rem',
+            fontWeight: 800,
+            color: 'var(--currency)',
+            margin: '12px 0 4px',
+          }}
+        >
           ${balance ? balance.balance.toFixed(2) : '---'}
         </div>
       </div>
 
       {/* Messages */}
       {message && (
-        <div className="terminal-card" style={{ fontSize: '0.85rem', color: 'var(--info)' }}>
+        <div className="terminal-card" style={{ fontSize: '0.95rem', color: 'var(--text-body)' }}>
           {message}
           <button
+            type="button"
             onClick={() => setMessage('')}
             style={{
-              float: 'right', background: 'none', border: 'none',
-              color: 'var(--text-dim)', cursor: 'pointer', fontSize: '0.8rem'
+              float: 'right',
+              background: 'none',
+              border: 'none',
+              color: 'var(--teal-600)',
+              cursor: 'pointer',
+              fontSize: '0.85rem',
+              fontWeight: 700,
             }}
           >
-            [dismiss]
+            Dismiss
           </button>
         </div>
       )}
 
-      {/* Preload section */}
-      <div className="terminal-card">
-        <h2>[ Preload Funds ]</h2>
-        <p style={{ fontSize: '0.75rem', color: 'var(--text-dim)', marginBottom: '12px' }}>
-          Add funds before going offline. Simulated bank transfer.
-        </p>
-        <div style={{ display: 'flex', gap: '8px' }}>
-          <input
-            className="terminal-input"
-            type="number"
-            step="0.01"
-            min="0"
-            placeholder="Amount ($)"
-            value={preloadAmount}
-            onChange={(e) => setPreloadAmount(e.target.value)}
-            style={{ flex: 1 }}
-          />
-          <button
-            className="btn-terminal"
-            onClick={handlePreload}
-            disabled={loading}
-            style={{ width: 'auto', padding: '12px 20px' }}
-          >
-            Preload
-          </button>
+      <div className="wallet-grid">
+        <div className="terminal-card feature-card--peach" style={{ boxShadow: 'var(--shadow-card)', marginBottom: 0 }}>
+          <h2>Preload funds</h2>
+          <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: '14px' }}>
+            Add funds before going offline. Simulated bank transfer.
+          </p>
+          <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+            <input
+              className="terminal-input"
+              type="number"
+              step="0.01"
+              min="0"
+              placeholder="Amount ($)"
+              value={preloadAmount}
+              onChange={(e) => setPreloadAmount(e.target.value)}
+              style={{ flex: '1 1 140px', minWidth: 0 }}
+            />
+            <button
+              type="button"
+              className="btn-terminal btn-terminal--secondary btn-terminal--inline"
+              onClick={handlePreload}
+              disabled={loading}
+            >
+              Preload
+            </button>
+          </div>
         </div>
-      </div>
 
-      {/* Pay section */}
-      <div className="terminal-card">
-        <h2>[ Make Payment ]</h2>
-        <p style={{ fontSize: '0.75rem', color: 'var(--text-dim)', marginBottom: '12px' }}>
-          Generate a QR code for the vendor to scan.
-        </p>
+        <div className="terminal-card feature-card--teal" style={{ boxShadow: 'var(--shadow-card)', marginBottom: 0 }}>
+          <h2>Make payment</h2>
+          <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: '14px' }}>
+            Generate a QR code for the vendor to scan.
+          </p>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
           <input
             className="terminal-input"
@@ -176,16 +182,17 @@ export default function Wallet() {
             value={payDesc}
             onChange={(e) => setPayDesc(e.target.value)}
           />
-          <button className="btn-terminal" onClick={handlePay} disabled={loading}>
-            Generate QR Payment
+          <button type="button" className="btn-terminal" onClick={handlePay} disabled={loading}>
+            Generate payment QR
           </button>
         </div>
+      </div>
       </div>
 
       {/* QR display */}
       {qrResult && (
         <div className="terminal-card" style={{ textAlign: 'center' }}>
-          <h2>[ Show to Vendor ]</h2>
+          <h2>Show to vendor</h2>
           <div className="qr-container">
             <img
               src={`data:image/png;base64,${qrResult.qr_code_base64}`}
@@ -198,11 +205,7 @@ export default function Wallet() {
           <div style={{ fontSize: '0.7rem', color: 'var(--text-dim)', marginTop: '4px' }}>
             Transaction: {qrResult.transaction_id.slice(0, 16)}...
           </div>
-          <button
-            className="btn-terminal"
-            style={{ marginTop: '12px' }}
-            onClick={() => setQrResult(null)}
-          >
+          <button type="button" className="btn-terminal btn-terminal--secondary" style={{ marginTop: '16px' }} onClick={() => setQrResult(null)}>
             Done
           </button>
         </div>
@@ -210,7 +213,7 @@ export default function Wallet() {
 
       {/* Recent transactions */}
       <div className="terminal-card">
-        <h2>[ Recent Transactions ]</h2>
+        <h2>Recent transactions</h2>
         {transactions.length === 0 ? (
           <p style={{ color: 'var(--text-dim)', fontSize: '0.85rem' }}>No transactions yet.</p>
         ) : (

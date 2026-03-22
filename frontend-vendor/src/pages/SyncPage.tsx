@@ -1,4 +1,4 @@
-﻿import { useState } from 'react';
+import { useState } from 'react';
 import { getPendingForSync, updateTransactionStatus } from '../utils/storage';
 
 export default function SyncPage() {
@@ -50,41 +50,41 @@ export default function SyncPage() {
   };
 
   return (
-    <div className="container">
-      <h1>Sync & Settle</h1>
+    <div>
+      <h1 className="page-title">Sync &amp; settle</h1>
 
       <div className="card">
         <div className="info-row">
-          <span className="info-label">Pending Transactions</span>
-          <span>{pending.length}</span>
+          <span className="info-label">Pending transactions</span>
+          <span style={{ fontWeight: 700 }}>{pending.length}</span>
         </div>
         <div className="info-row">
-          <span className="info-label">Pending Amount</span>
-          <span>${pending.reduce((s, t) => s + t.amount, 0).toFixed(2)}</span>
+          <span className="info-label">Pending amount</span>
+          <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 700 }}>
+            ${pending.reduce((s, t) => s + t.amount, 0).toFixed(2)}
+          </span>
         </div>
       </div>
 
-      <button
-        className="btn btn-primary"
-        onClick={handleSync}
-        disabled={syncing}
-        style={{ marginBottom: '16px' }}
-      >
-        {syncing ? 'Syncing...' : 'Sync Now'}
+      <button type="button" className="btn btn-primary" onClick={handleSync} disabled={syncing} style={{ marginBottom: '14px' }}>
+        {syncing ? 'Syncing…' : 'Sync now'}
       </button>
 
       {status && (
         <div className="card">
-          <p style={{ textAlign: 'center', color: 'var(--text-secondary)' }}>{status}</p>
+          <p className="help-text" style={{ textAlign: 'center', margin: 0 }}>
+            {status}
+          </p>
         </div>
       )}
 
-      <div className="card" style={{ marginTop: '16px' }}>
-        <h2>How Sync Works</h2>
-        <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', lineHeight: 1.6 }}>
-          When internet is available, tap "Sync Now" to send your accepted
-          payments to the settlement server. Each transaction is matched against
-          the device's records and marked as settled.
+      <div className="card">
+        <h2 className="section-label" style={{ marginTop: 0 }}>
+          How sync works
+        </h2>
+        <p className="help-text">
+          When internet is available, tap &quot;Sync now&quot; to send accepted payments to the settlement
+          server. Each transaction is matched against the device records and marked as settled.
         </p>
       </div>
     </div>

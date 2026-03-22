@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { getTransactions, StoredTransaction } from '../utils/storage';
 import TransactionList from '../components/TransactionList';
 
@@ -14,23 +14,23 @@ export default function HistoryPage() {
     .reduce((sum, t) => sum + t.amount, 0);
 
   return (
-    <div className="container">
-      <h1>Transaction History</h1>
+    <div>
+      <h1 className="page-title">History</h1>
 
-      <div className="card">
-        <div className="info-row">
-          <span className="info-label">Total Received</span>
-          <span className="amount-display" style={{ fontSize: '1.5rem', margin: 0 }}>
-            
-          </span>
+      <div className="card card-hero">
+        <div className="section-label" style={{ textAlign: 'center', marginBottom: '4px' }}>
+          Total received
         </div>
-        <div className="info-row">
-          <span className="info-label">Transaction Count</span>
-          <span>{transactions.length}</span>
-        </div>
+        <div className="amount-display muted">${total.toFixed(2)}</div>
+        <p className="muted-caption" style={{ marginTop: 0 }}>
+          {transactions.length} transaction{transactions.length !== 1 ? 's' : ''} on this device
+        </p>
       </div>
 
-      <TransactionList transactions={transactions} />
+      <h2 className="section-label">Recent transactions</h2>
+      <div className="card" style={{ padding: '8px 18px 12px' }}>
+        <TransactionList transactions={transactions} />
+      </div>
     </div>
   );
 }
