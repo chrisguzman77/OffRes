@@ -1,7 +1,7 @@
 export default function Home() {
   return (
     <div>
-      <h1>DisasterPi</h1>
+      <h1>OFFRes</h1>
       <div className="terminal-card">
         <p style={{ lineHeight: 1.8, fontSize: '0.9rem' }}>
           Emergency response device operating in <strong>offline mode</strong>.
