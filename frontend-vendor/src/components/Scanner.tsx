@@ -1,5 +1,5 @@
-﻿import { useEffect, useRef, useState } from 'react';
-import { Html5Qrcode } from 'html5-qrcode';
+import { useEffect, useRef, useState } from 'react';
+import { Html5Qrcode, Html5QrcodeSupportedFormats } from 'html5-qrcode';
 
 interface ScannerProps {
   onScan: (data: string) => void;
@@ -14,21 +14,25 @@ export default function Scanner({ onScan, isActive }: ScannerProps) {
   useEffect(() => {
     if (!isActive) return;
 
-    const scanner = new Html5Qrcode('qr-reader');
+    const scanner = new Html5Qrcode('qr-reader', {
+      formatsToSupport: [Html5QrcodeSupportedFormats.QR_CODE],
+      verbose: false,
+    });
     scannerRef.current = scanner;
 
+    // html5-qrcode requires an object with exactly one key here (deviceId, facingMode, or userPreferences).
     scanner
       .start(
         { facingMode: 'environment' },
         {
-          fps: 10,
-          qrbox: { width: 250, height: 250 },
-          aspectRatio: 1.0,
+          fps: 15,
+          // Omit qrbox so the whole camera frame is decoded (per html5-qrcode docs).
+          // Any cropped region often misses part of the code when scanning another phone.
         },
         (decodedText) => {
           isRunningRef.current = false;
           scanner.stop().then(() => {
-            onScan(decodedText);
+            onScan(decodedText.trim());
           }).catch(() => {});
         },
         () => {}

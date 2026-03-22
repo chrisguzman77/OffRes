@@ -1,4 +1,6 @@
-﻿export interface QRPayload {
+import { inflate } from 'pako';
+
+export interface QRPayload {
   data: {
     transaction_id: string;
     wallet_id: string;
@@ -11,47 +13,29 @@
   signature: string;
 }
 
-function decompressPayload(compressed: string): Promise<string> {
+function normalizeScannedPayload(raw: string): string {
+  return raw.replace(/^\uFEFF/, '').trim();
+}
+
+/** Decompresses Python `zlib.compress` output (RFC 1950 zlib wrapper). */
+function decompressPayload(compressed: string): string {
   try {
-    const raw = atob(compressed.replace(/-/g, '+').replace(/_/g, '/'));
+    let b64 = compressed.replace(/-/g, '+').replace(/_/g, '/');
+    const pad = b64.length % 4;
+    if (pad) b64 += '='.repeat(4 - pad);
+    const raw = atob(b64);
     const bytes = new Uint8Array(raw.length);
     for (let i = 0; i < raw.length; i++) {
       bytes[i] = raw.charCodeAt(i);
     }
-
-    const ds = new DecompressionStream('deflate');
-    const writer = ds.writable.getWriter();
-    const reader = ds.readable.getReader();
-
-    writer.write(bytes);
-    writer.close();
-
-    return new Promise<string>((resolve, reject) => {
-      const chunks: Uint8Array[] = [];
-      function read(): void {
-        reader.read().then(({ done, value }) => {
-          if (done) {
-            const combined = new Uint8Array(chunks.reduce((a, c) => a + c.length, 0));
-            let offset = 0;
-            for (const chunk of chunks) {
-              combined.set(chunk, offset);
-              offset += chunk.length;
-            }
-            resolve(new TextDecoder().decode(combined));
-          } else {
-            chunks.push(value);
-            read();
-          }
-        }).catch(reject);
-      }
-      read();
-    });
+    return new TextDecoder().decode(inflate(bytes));
   } catch {
-    return Promise.resolve(compressed);
+    return compressed;
   }
 }
 
 export async function parseQRPayload(raw: string): Promise<QRPayload | null> {
+  raw = normalizeScannedPayload(raw);
   try {
     // First try direct JSON parse (uncompressed)
     const direct = JSON.parse(raw);
@@ -79,10 +63,11 @@ export async function verifyWithDevice(
   vendorName: string,
   deviceUrl: string = 'http://localhost:8000'
 ): Promise<{ success: boolean; message: string }> {
+  qrPayload = normalizeScannedPayload(qrPayload);
   // Decompress first to get the original signed JSON
   let originalPayload = qrPayload;
   try {
-    const decompressed = await decompressPayload(qrPayload);
+    const decompressed = decompressPayload(qrPayload);
     JSON.parse(decompressed); // Verify it's valid JSON
     originalPayload = decompressed;
   } catch {
