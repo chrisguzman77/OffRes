@@ -243,7 +243,7 @@ h2 {
 }
 
 .cursor-blink::after {
-  content: '█';
+  content: '�';
   animation: blink 1s infinite;
   margin-left: 2px;
 }
@@ -258,9 +258,15 @@ h2 {
 }
 
 .qr-container img {
-  max-width: 250px;
+  width: min(92vw, 380px);
+  max-width: 100%;
+  height: auto;
+  display: block;
   border: 2px solid var(--terminal-green);
   border-radius: var(--radius);
+  /* Keep modules sharp when the browser scales the PNG */
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
 }
 
 /* Scrollbar styling */
