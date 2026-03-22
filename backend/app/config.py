@@ -18,7 +18,7 @@ MODEL_PATH = os.getenv("MODEL_PATH", str(BASE_DIR / "data" / "models" / "tinylla
 # TinyLlama 1.1B Chat is trained for 2048 tokens; larger -c values still truncate internally and
 # can cut long RAG prompts mid-string (broken completions that repeat the system block).
 MODEL_CONTEXT_SIZE = int(os.getenv("MODEL_CONTEXT_SIZE", "2048"))
-MODEL_THREADS = 8  # Pi 5 has 4 cores
+MODEL_THREADS = 4  # Pi 5 has 4 cores
 MODEL_MAX_TOKENS = int(os.getenv("MODEL_MAX_TOKENS", "512"))
 
 # Knowledge base

@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import { apiGet, apiPost } from '../utils/api';
+import KioskScreenKeyboard from '../components/KioskScreenKeyboard';
+import { blurActiveElement } from '../utils/keyboardFocus';
 
 interface BalanceData {
   wallet_id: string;
@@ -22,6 +24,8 @@ interface TransactionItem {
   created_at: string;
 }
 
+type WalletOskField = 'preload' | 'payAmount' | 'payDesc';
+
 export default function Wallet() {
   const [balance, setBalance] = useState<BalanceData | null>(null);
   const [preloadAmount, setPreloadAmount] = useState('');
@@ -31,6 +35,7 @@ export default function Wallet() {
   const [transactions, setTransactions] = useState<TransactionItem[]>([]);
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
+  const [oskField, setOskField] = useState<WalletOskField | null>(null);
 
   const fetchBalance = async () => {
     try {
@@ -62,6 +67,8 @@ export default function Wallet() {
       setMessage(res.message);
       setPreloadAmount('');
       fetchBalance();
+      setOskField(null);
+      blurActiveElement();
     } catch (err: any) {
       setMessage(`Error: ${err.message}`);
     }
@@ -82,10 +89,21 @@ export default function Wallet() {
       setPayDesc('');
       fetchBalance();
       fetchTransactions();
+      setOskField(null);
+      blurActiveElement();
     } catch (err: any) {
       setMessage(`Error: ${err.message}`);
     }
     setLoading(false);
+  };
+
+  const closeOsk = () => {
+    setOskField(null);
+    blurActiveElement();
+  };
+
+  const openWalletOsk = (field: WalletOskField) => () => {
+    queueMicrotask(() => setOskField(field));
   };
 
   return (
@@ -138,17 +156,30 @@ export default function Wallet() {
           <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: '14px' }}>
             Add funds before going offline. Simulated bank transfer.
           </p>
-          <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'stretch' }}>
             <input
-              className="terminal-input"
-              type="number"
-              step="0.01"
-              min="0"
+              className="terminal-input touch-keyboard-field"
+              type="text"
+              inputMode="decimal"
+              enterKeyHint="done"
+              pattern="[0-9]*\.?[0-9]*"
               placeholder="Amount ($)"
               value={preloadAmount}
               onChange={(e) => setPreloadAmount(e.target.value)}
+              onPointerDown={openWalletOsk('preload')}
               style={{ flex: '1 1 140px', minWidth: 0 }}
             />
+            <button
+              type="button"
+              className="btn-terminal btn-terminal--secondary btn-terminal--inline"
+              style={{ minWidth: '52px' }}
+              onClick={openWalletOsk('preload')}
+              disabled={loading}
+              aria-label="Show on-screen keyboard"
+              title="Show keyboard"
+            >
+              ⌨
+            </button>
             <button
               type="button"
               className="btn-terminal btn-terminal--secondary btn-terminal--inline"
@@ -166,22 +197,55 @@ export default function Wallet() {
             Generate a QR code for the vendor to scan.
           </p>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-          <input
-            className="terminal-input"
-            type="number"
-            step="0.01"
-            min="0"
-            placeholder="Payment amount ($)"
-            value={payAmount}
-            onChange={(e) => setPayAmount(e.target.value)}
-          />
-          <input
-            className="terminal-input"
-            type="text"
-            placeholder="Description (optional)"
-            value={payDesc}
-            onChange={(e) => setPayDesc(e.target.value)}
-          />
+          <div style={{ display: 'flex', gap: '10px', alignItems: 'stretch' }}>
+            <input
+              className="terminal-input touch-keyboard-field"
+              style={{ flex: 1, minWidth: 0 }}
+              type="text"
+              inputMode="decimal"
+              enterKeyHint="next"
+              pattern="[0-9]*\.?[0-9]*"
+              placeholder="Payment amount ($)"
+              value={payAmount}
+              onChange={(e) => setPayAmount(e.target.value)}
+              onPointerDown={openWalletOsk('payAmount')}
+            />
+            <button
+              type="button"
+              className="btn-terminal btn-terminal--secondary btn-terminal--inline"
+              style={{ minWidth: '52px' }}
+              onClick={openWalletOsk('payAmount')}
+              disabled={loading}
+              aria-label="Show on-screen keyboard"
+              title="Show keyboard"
+            >
+              ⌨
+            </button>
+          </div>
+          <div style={{ display: 'flex', gap: '10px', alignItems: 'stretch' }}>
+            <input
+              className="terminal-input touch-keyboard-field"
+              style={{ flex: 1, minWidth: 0 }}
+              type="text"
+              inputMode="text"
+              enterKeyHint="done"
+              placeholder="Description (optional)"
+              value={payDesc}
+              onChange={(e) => setPayDesc(e.target.value)}
+              onPointerDown={openWalletOsk('payDesc')}
+            />
+            <button
+              type="button"
+              className="btn-terminal btn-terminal--secondary btn-terminal--inline"
+              style={{ minWidth: '52px' }}
+              onClick={openWalletOsk('payDesc')}
+              disabled={loading}
+              aria-label="Show on-screen keyboard"
+              title="Show keyboard"
+            >
+              ⌨
+            </button>
+          </div>
           <button type="button" className="btn-terminal" onClick={handlePay} disabled={loading}>
             Generate payment QR
           </button>
@@ -236,6 +300,31 @@ export default function Wallet() {
           ))
         )}
       </div>
+
+      {oskField === 'preload' && (
+        <KioskScreenKeyboard
+          value={preloadAmount}
+          onChange={setPreloadAmount}
+          mode="decimal"
+          onClose={closeOsk}
+        />
+      )}
+      {oskField === 'payAmount' && (
+        <KioskScreenKeyboard
+          value={payAmount}
+          onChange={setPayAmount}
+          mode="decimal"
+          onClose={closeOsk}
+        />
+      )}
+      {oskField === 'payDesc' && (
+        <KioskScreenKeyboard
+          value={payDesc}
+          onChange={setPayDesc}
+          mode="text"
+          onClose={closeOsk}
+        />
+      )}
     </div>
   );
 }

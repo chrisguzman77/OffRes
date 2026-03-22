@@ -1,6 +1,8 @@
 import { useState, useRef, useEffect, useCallback, type KeyboardEvent } from 'react';
 import { apiPost } from '../utils/api';
 import LoadingDots from '../components/LoadingDots';
+import KioskScreenKeyboard from '../components/KioskScreenKeyboard';
+import { blurActiveElement } from '../utils/keyboardFocus';
 
 interface LLMAskResponse {
   question: string;
@@ -22,6 +24,7 @@ export default function Assistant() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showOsk, setShowOsk] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -60,6 +63,8 @@ export default function Assistant() {
     }
 
     setLoading(false);
+    setShowOsk(false);
+    blurActiveElement();
   }, [input, loading]);
 
   const onKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
@@ -67,6 +72,10 @@ export default function Assistant() {
       e.preventDefault();
       void handleSubmit();
     }
+  };
+
+  const openEmbeddedKeyboard = () => {
+    queueMicrotask(() => setShowOsk(true));
   };
 
   return (
@@ -77,6 +86,49 @@ export default function Assistant() {
       <p className="page-subtitle" style={{ color: 'var(--text-muted)', fontSize: '1rem', marginBottom: '20px', maxWidth: '50ch' }}>
         Safety and preparedness answers from the model on this device — no cloud required.
       </p>
+
+      {/* Input at top so the on-screen keyboard (bottom) does not cover what you type */}
+      <div
+        className="terminal-card assistant-input-sticky"
+        style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '16px' }}
+      >
+        <div style={{ display: 'flex', gap: '10px', alignItems: 'stretch' }}>
+          <input
+            className="terminal-input touch-keyboard-field"
+            style={{ flex: 1, minWidth: 0, boxSizing: 'border-box' }}
+            type="text"
+            inputMode="text"
+            enterKeyHint="send"
+            autoComplete="off"
+            autoCorrect="off"
+            placeholder="Ask a question…"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onPointerDown={openEmbeddedKeyboard}
+            onKeyDown={onKeyDown}
+            disabled={loading}
+          />
+          <button
+            type="button"
+            className="btn-terminal btn-terminal--secondary btn-terminal--inline"
+            style={{ minWidth: '52px', paddingLeft: '12px', paddingRight: '12px' }}
+            onClick={openEmbeddedKeyboard}
+            disabled={loading}
+            aria-label="Show on-screen keyboard"
+            title="Show keyboard"
+          >
+            ⌨
+          </button>
+        </div>
+        <button
+          type="button"
+          className="btn-terminal"
+          onClick={() => void handleSubmit()}
+          disabled={loading || !input.trim()}
+        >
+          Send
+        </button>
+      </div>
 
       <div className="assistant-layout-wide">
         <div>
@@ -96,7 +148,7 @@ export default function Assistant() {
               minHeight: '200px',
               maxHeight: 'min(52vh, 480px)',
               overflowY: 'auto',
-              marginBottom: '16px',
+              marginBottom: '0',
               display: 'flex',
               flexDirection: 'column',
               gap: '14px',
@@ -192,29 +244,20 @@ export default function Assistant() {
 
             <div ref={bottomRef} />
           </div>
-
-          <div className="terminal-card" style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-            <input
-              className="terminal-input"
-              type="text"
-              placeholder="Ask a question…"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={onKeyDown}
-              disabled={loading}
-              style={{ width: '100%', boxSizing: 'border-box' }}
-            />
-            <button
-              type="button"
-              className="btn-terminal"
-              onClick={() => void handleSubmit()}
-              disabled={loading || !input.trim()}
-            >
-              Send
-            </button>
-          </div>
         </div>
       </div>
+
+      {showOsk && (
+        <KioskScreenKeyboard
+          value={input}
+          onChange={setInput}
+          mode="text"
+          onClose={() => {
+            setShowOsk(false);
+            blurActiveElement();
+          }}
+        />
+      )}
     </div>
   );
 }

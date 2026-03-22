@@ -1,0 +1,28 @@
+# Example systemd unit — copy to /etc/systemd/system/disasterpi-kiosk.service and adjust paths.
+#   sudo cp kiosk/disasterpi-kiosk.service.example /etc/systemd/system/disasterpi-kiosk.service
+#   sudo systemctl daemon-reload
+#   sudo systemctl enable --now disasterpi-kiosk.service
+#
+# Install a system keyboard (pick one):
+#   sudo apt install onboard          # X11
+#   sudo apt install squeekboard      # Wayland (common on Pi OS Bookworm)
+
+[Unit]
+Description=DisasterPi Chromium kiosk
+After=network-online.target graphical-session.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=pi-user
+Group=pi-user
+Environment=DISPLAY=:0
+# Wayland (uncomment if you use labwc/wayfire and no DISPLAY):
+# Environment=WAYLAND_DISPLAY=wayland-1
+WorkingDirectory=/home/pi-user/OffRes
+ExecStart=/home/pi-user/OffRes/kiosk/kiosk.sh
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=graphical.target

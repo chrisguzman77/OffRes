@@ -2,18 +2,37 @@
 __pycache__/
 *.py[cod]
 *.egg-info/
+.eggs/
+*.egg
+venv/
 backend/venv/
+frontend-user/venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+coverage.xml
+htmlcov/
 backend/data/disasterpi.db
 backend/data/models/*.gguf
 
-# Node
+# Node / frontends
 node_modules/
 frontend-user/dist/
 frontend-vendor/dist/
+frontend-user/node_modules/
+frontend-vendor/node_modules/
+
+# TypeScript (tsc -b incremental / project references)
+*.tsbuildinfo
+
+# Vite / tooling
+.eslintcache
 
 # Environment
 .env
 .env.local
+.env.*.local
 
 # OS
 .DS_Store
@@ -24,6 +43,13 @@ Thumbs.db
 .idea/
 *.swp
 *.swo
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
 
 # Map tiles (too large for git)
 frontend-user/public/tiles/

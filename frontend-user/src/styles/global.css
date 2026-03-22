@@ -492,6 +492,118 @@ h2 {
   color: var(--text-dim);
 }
 
+/* Touchscreen / Pi kiosk: reduce tap delay */
+.touch-keyboard-field {
+  touch-action: manipulation;
+}
+
+/* Embedded simple-keyboard (KioskScreenKeyboard) */
+.kiosk-osk-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  isolation: isolate;
+  background: rgba(15, 23, 42, 0.55);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: env(safe-area-inset-bottom, 0);
+  touch-action: none;
+}
+
+.kiosk-osk-panel {
+  width: 100%;
+  max-width: 960px;
+  background: var(--surface-elevated);
+  border-radius: 16px 16px 0 0;
+  box-shadow: 0 -12px 40px rgba(0, 0, 0, 0.25);
+  border: 1px solid var(--border);
+  border-bottom: none;
+}
+
+.kiosk-osk-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px 6px;
+}
+
+.kiosk-osk-title {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+}
+
+.kiosk-osk-done {
+  font: inherit;
+  font-weight: 700;
+  font-size: 0.9rem;
+  padding: 8px 16px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  background: var(--teal-500);
+  color: #fff;
+  cursor: pointer;
+}
+
+.kiosk-osk-done:hover {
+  filter: brightness(1.05);
+}
+
+.kiosk-osk-keyboard-wrap {
+  padding: 0 8px 12px;
+}
+
+/* Pure-React keyboard grid */
+.kiosk-key-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+.kiosk-key-row {
+  display: flex;
+  flex-direction: row;
+  gap: 6px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.kiosk-key {
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 48px;
+  padding: 0 6px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--bg-input);
+  color: var(--text-strong);
+  font: inherit;
+  font-size: 1.05rem;
+  font-weight: 600;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.kiosk-key:active {
+  background: var(--teal-muted);
+  border-color: var(--teal-500);
+}
+
+.kiosk-key--wide {
+  flex: 1.4 1 0;
+  min-width: 56px;
+}
+
+.kiosk-key--grow {
+  flex: 3 1 0;
+  min-width: 120px;
+}
+
 .terminal-textarea {
   width: 100%;
   padding: 14px 16px;
@@ -709,6 +821,15 @@ h2 {
     grid-template-columns: 1fr 1fr;
     align-items: start;
   }
+}
+
+/* Keep prompt visible while scrolling chat; sits below page title, above keyboard */
+.assistant-input-sticky {
+  position: sticky;
+  top: 0;
+  z-index: 25;
+  background: var(--surface-page);
+  box-shadow: 0 6px 20px rgba(15, 23, 42, 0.06);
 }
 
 .map-legend-grid {

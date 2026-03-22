@@ -82,7 +82,58 @@ def build_prompt(question: str, context_chunks: list[dict]) -> str:
 
 def strip_ansi(text: str) -> str:
     """Remove ANSI escape codes (color, cursor, reset sequences)."""
-    return re.sub(r'\x1b\[[0-9;]*[a-zA-Z]', '', text)
+    text = re.sub(r'\x1b\[[0-9;]*[a-zA-Z]', '', text)
+    # llama-cli "spinner" uses backspaces over | / - \
+    text = re.sub(r'[\x08\r]', '', text)
+    return text
+
+
+def _line_is_llama_cli_banner(line: str) -> bool:
+    """Lines from newer llama-cli (banner, chat UI) that are not model text."""
+    s = line.strip()
+    if s.startswith("Loading model") or s.startswith("Loading "):
+        return True
+    if "█" in line or "▄" in line or "▀" in line:
+        return True
+    if s.startswith("build") and " : " in line:
+        return True
+    if s.startswith("model ") and " : " in line:
+        return True
+    if s.startswith("modalities"):
+        return True
+    if s.startswith("available commands"):
+        return True
+    if s.startswith(">") and "<|" in line:
+        return True
+    if s.startswith(("/exit", "/regen", "/clear", "/read")):
+        return True
+    if s.startswith("[") and "t/s" in s and s.rstrip().endswith("]"):
+        return True
+    if s == "Exiting...":
+        return True
+    return False
+
+
+def _looks_like_spinner_line(line: str) -> bool:
+    s = line.strip()
+    if not s:
+        return True
+    if len(s) < 48 and all(c in "|/\\-_\t " for c in s):
+        return True
+    return False
+
+
+def _strip_first_line_spinner_prefix(line: str) -> str:
+    """Remove llama-cli spinner residue merged into the first line of output (e.g. |/-\\| text)."""
+    m = re.match(r"^([\s|/\\\-]+)", line)
+    if not m:
+        return line
+    prefix = m.group(1)
+    if len(prefix) < 6:
+        return line
+    if re.search(r"[0-9A-Za-z]", prefix):
+        return line
+    return line[len(prefix) :].lstrip()
 
 
 def parse_llm_output(raw: str) -> str:
@@ -124,8 +175,23 @@ def parse_llm_output(raw: str) -> str:
             break
         answer = stripped
 
+    # Memory / timing lines sometimes append to the same line as the completion (stderr merged with stdout)
+    answer = re.split(r"llama_memory_breakdown_print:.*", answer, maxsplit=1)[0]
+    answer = re.sub(r"\[ Prompt:.*?\]", "", answer, flags=re.DOTALL)
     answer = re.sub(r'\[.*?t/s.*?\]', '', answer, flags=re.DOTALL)
     answer = re.sub(r'Exiting\.\.\.', '', answer)
+
+    alines = answer.splitlines()
+    i = 0
+    while i < len(alines) and _looks_like_spinner_line(alines[i]):
+        i += 1
+    answer = "\n".join(alines[i:])
+    if answer:
+        fl = answer.splitlines()
+        if fl:
+            fl[0] = _strip_first_line_spinner_prefix(fl[0])
+            answer = "\n".join(fl)
+
     answer = re.sub(r'\n{3,}', '\n\n', answer)
 
     return answer.strip()
@@ -145,8 +211,11 @@ def _answer_looks_like_prompt_echo(answer: str) -> bool:
     return False
 
 
+
+
 def _run_llama_subprocess(prompt: str, max_tokens: int) -> subprocess.CompletedProcess:
     tmp_path = None
+    out_path = None
     try:
         with tempfile.NamedTemporaryFile(
             mode="w",
@@ -158,23 +227,73 @@ def _run_llama_subprocess(prompt: str, max_tokens: int) -> subprocess.CompletedP
             tmp.write(prompt)
             tmp_path = tmp.name
 
-        return subprocess.run(
-            [
-                LLAMA_CPP_PATH,
-                "-m", MODEL_PATH,
-                "-f", tmp_path,
-                "-n", str(max_tokens),
-                "-c", str(MODEL_CONTEXT_SIZE),
-                "-t", str(MODEL_THREADS),
-                "--temp", "0.7",
-                "--top-p", "0.9",
-                "--repeat-penalty", "1.1",
-                "--single-turn",
-            ],
-            capture_output=True,
+        out_path = tmp_path + ".out"
+
+        cmd = (
+            f'{LLAMA_CPP_PATH}'
+            f' -m "{MODEL_PATH}"'
+            f' -f "{tmp_path}"'
+            f' -n {max_tokens}'
+            f' -c {MODEL_CONTEXT_SIZE}'
+            f' -t {MODEL_THREADS}'
+            f' --temp 0.7'
+            f' --top-p 0.9'
+            f' --repeat-penalty 1.1'
+            f' --no-display-prompt'
+            f' --no-show-timings'
+            # Without this, llama-cli uses fancy console I/O (may write to /dev/tty); stdout redirect
+            # from the shell then stays empty while the server terminal shows all output.
+            f' --simple-io'
+            # Newer llama-cli enables chat/conversation mode when a template exists; without this the
+            # process never exits and the backend subprocess hangs (Windows builds often differed).
+            f' --single-turn'
+            f' > "{out_path}" 2>&1'
+        )
+
+        result = subprocess.run(
+            cmd,
+            shell=True,
             text=True,
             stdin=subprocess.DEVNULL,
+            start_new_session=True,
             timeout=300,
+        )
+
+        stdout_text = ""
+        if os.path.exists(out_path):
+            with open(out_path, "r", encoding="utf-8") as f:
+                stdout_text = f.read()
+
+        lines = stdout_text.strip().split('\n')
+        response_lines = [
+            line for line in lines
+            if not line.startswith('llama_')
+            and not line.startswith('llm_')
+            and not line.startswith('ggml_')
+            and not line.startswith('Log ')
+            and not line.startswith('main:')
+            and not line.startswith('system_info:')
+            and not line.startswith('sampling:')
+            and not line.startswith('generate:')
+            and not line.startswith('build:')
+            and not line.startswith('warmup:')
+            and not line.startswith('common_')
+            and not _line_is_llama_cli_banner(line)
+            and 'model loaded' not in line.lower()
+            and 'load time' not in line.lower()
+            and 'eval time' not in line.lower()
+            and 'total time' not in line.lower()
+            and 'tokens per second' not in line.lower()
+            and 'n_predict' not in line.lower()
+            and 'print_timings' not in line.lower()
+            and len(line.strip()) > 0
+        ]
+
+        return subprocess.CompletedProcess(
+            args=cmd,
+            returncode=result.returncode,
+            stdout='\n'.join(response_lines),
+            stderr="",
         )
     finally:
         if tmp_path:
@@ -182,7 +301,11 @@ def _run_llama_subprocess(prompt: str, max_tokens: int) -> subprocess.CompletedP
                 os.unlink(tmp_path)
             except OSError:
                 pass
-
+        if out_path:
+            try:
+                os.unlink(out_path)
+            except OSError:
+                pass
 
 def ask_llm(question: str, max_tokens: int = None) -> dict:
     """
