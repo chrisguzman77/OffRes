@@ -1,0 +1,48 @@
+/*
+ * OFFPay vendor — professional light banking theme, iOS-oriented.
+ * High contrast, purple-blue primary (reference OffPay), system typography.
+ */
+
+:root {
+  --bg-app: #f0f2f7;
+  --bg-elevated: #ffffff;
+  --bg-subtle: #e8ecf4;
+  --text-primary: #0f172a;
+  --text-secondary: #64748b;
+  --text-tertiary: #94a3b8;
+  --brand: #5548d9;
+  --brand-hover: #4338ca;
+  --brand-muted: rgba(85, 72, 217, 0.1);
+  --success: #16a34a;
+  --success-muted: rgba(22, 163, 74, 0.12);
+  --warning: #ca8a04;
+  --error: #dc2626;
+  --error-muted: rgba(220, 38, 38, 0.08);
+  --border: #e2e8f0;
+  --border-strong: #cbd5e1;
+  --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.06);
+  --shadow-md: 0 4px 16px rgba(15, 23, 42, 0.08);
+  --shadow-card: 0 2px 12px rgba(15, 23, 42, 0.06);
+
+  --font-sans: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display',
+    system-ui, 'Segoe UI', sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', Menlo, monospace;
+
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 18px;
+  --radius-pill: 9999px;
+
+  --tabbar-height: 56px;
+  --header-height: auto;
+
+  color-scheme: only light;
+
+  /* Aliases for components / inline styles using older names */
+  --accent: var(--brand);
+  --accent-hover: var(--brand-hover);
+  --bg-primary: var(--bg-app);
+  --bg-secondary: var(--bg-subtle);
+  --bg-card: var(--bg-elevated);
+  --radius: var(--radius-md);
+}

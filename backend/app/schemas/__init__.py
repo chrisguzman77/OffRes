@@ -5,3 +5,4 @@ from app.schemas.wallet import (
     VendorAcceptResponse, SyncRequest, SyncResponse
 )
 from app.schemas.maps import MapPoint, MapResponse
+

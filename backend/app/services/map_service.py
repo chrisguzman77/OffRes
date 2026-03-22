@@ -45,3 +45,4 @@ def load_map_points() -> dict:
         "region": geojson.get("region", "Local Area"),
         "last_updated": geojson.get("last_updated", "pre-loaded")
     }
+

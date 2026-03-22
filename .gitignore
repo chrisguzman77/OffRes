@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+backend/venv/
+backend/data/disasterpi.db
+backend/data/models/*.gguf
+
+# Node
+node_modules/
+frontend-user/dist/
+frontend-vendor/dist/
+
+# Environment
+.env
+.env.local
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Map tiles (too large for git)
+frontend-user/public/tiles/

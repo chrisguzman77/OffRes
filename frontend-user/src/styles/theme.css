@@ -1,0 +1,89 @@
+/*
+ * OFFRes — travel-inspired light UI (reference: teal / navy / peach, soft cards)
+ * Tablet+: left rail. Mobile: bottom bar. Content on pale surfaces.
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap');
+
+:root {
+  --navy-950: #070f1a;
+  --navy-900: #0c1929;
+  --navy-800: #132337;
+  --navy-700: #1e3a5f;
+
+  --teal-600: #0d9488;
+  --teal-500: #14b8a6;
+  --teal-400: #2dd4bf;
+  --teal-soft: #ccfbf1;
+  --teal-muted: rgba(20, 184, 166, 0.12);
+
+  --peach-500: #ea580c;
+  --peach-400: #fb923c;
+  --peach-300: #fdba74;
+  --peach-soft: #ffedd5;
+
+  --surface-page: #e8eef5;
+  --surface-elevated: #f8fafc;
+  --surface-card: #ffffff;
+  --surface-tint-teal: #ecfeff;
+  --surface-tint-peach: #fff7ed;
+  --surface-tint-sky: #eff6ff;
+
+  --text-strong: #0f172a;
+  --text-body: #334155;
+  --text-muted: #64748b;
+  --text-dim: #94a3b8;
+
+  --border: rgba(15, 23, 42, 0.08);
+  --border-strong: rgba(15, 23, 42, 0.12);
+
+  --shadow-sm: 0 2px 8px rgba(15, 23, 42, 0.06);
+  --shadow-card: 0 12px 40px -16px rgba(15, 23, 42, 0.14);
+  --shadow-float: 0 20px 50px -20px rgba(15, 23, 42, 0.2);
+
+  --radius-xl: 28px;
+  --radius-lg: 22px;
+  --radius-md: 16px;
+  --radius-sm: 12px;
+  --radius: var(--radius-lg);
+
+  --font-display: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --font-body: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', Menlo, monospace;
+
+  --sidebar-width: 232px;
+  --bottom-nav-height: 72px;
+
+  /* Legacy tokens — map to new palette so pages keep working */
+  --bg-primary: var(--surface-page);
+  --bg-secondary: var(--surface-elevated);
+  --bg-card: var(--surface-card);
+  --bg-card-elevated: var(--surface-elevated);
+  --bg-input: #f1f5f9;
+  --bg-hover: var(--teal-muted);
+  --text-primary: var(--text-strong);
+  --terminal-green: var(--teal-600);
+  --terminal-green-dim: var(--teal-500);
+  --terminal-green-dark: #0f766e;
+  --terminal-green-glow: rgba(13, 148, 136, 0.2);
+  --terminal-green-subtle: var(--teal-muted);
+  --brand-ember: var(--peach-400);
+  --brand-ember-bright: var(--peach-300);
+  --brand-ember-dim: var(--peach-500);
+  --brand-glow: 0 8px 24px rgba(251, 146, 60, 0.25);
+  --accent-teal: var(--teal-500);
+  --accent-teal-muted: var(--teal-muted);
+  --currency: var(--teal-600);
+  --currency-dim: var(--teal-400);
+  --currency-glow: 0 4px 24px rgba(13, 148, 136, 0.2);
+  --success: var(--teal-600);
+  --warning: #eab308;
+  --error: #ef4444;
+  --info: var(--teal-500);
+  --teal-700: #0f766e;
+  --border-bright: rgba(20, 184, 166, 0.35);
+  --border-card-top: linear-gradient(90deg, transparent, var(--teal-400), transparent);
+  --glow: 0 4px 20px rgba(20, 184, 166, 0.2);
+  --glow-strong: var(--glow);
+  --scanline-opacity: 0;
+}
