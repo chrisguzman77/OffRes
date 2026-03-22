@@ -4,7 +4,7 @@
 
 const BASE_URL = '';
 
-export async function apiGet(path) {
+export async function apiGet<T = unknown>(path: string): Promise<T> {
   const res = await fetch(`${BASE_URL}${path}`);
   if (!res.ok) {
     const err = await res.json().catch(() => ({ detail: 'Request failed' }));
@@ -13,7 +13,7 @@ export async function apiGet(path) {
   return res.json();
 }
 
-export async function apiPost(path, body) {
+export async function apiPost<T = unknown>(path: string, body: unknown): Promise<T> {
   const res = await fetch(`${BASE_URL}${path}`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
