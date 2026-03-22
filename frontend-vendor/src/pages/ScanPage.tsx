@@ -1,4 +1,4 @@
-﻿import { useState, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import Scanner from '../components/Scanner';
 import {
   parseQRPayload,
@@ -62,59 +62,62 @@ export default function ScanPage() {
   }, []);
 
   return (
-    <div className="container">
-      <h1>Scan Payment</h1>
+    <div>
+      <h1 className="page-title">Scan payment</h1>
 
       {!scanning && !result && (
-        <button className="btn btn-primary" onClick={() => setScanning(true)}>
-          Start Scanning
-        </button>
+        <>
+          <div className="card">
+            <p className="help-text" style={{ marginBottom: '16px' }}>
+              Point your camera at the customer&apos;s payment QR. Works best in good light with the full
+              code visible.
+            </p>
+            <button type="button" className="btn btn-primary" onClick={() => setScanning(true)}>
+              Start scanning
+            </button>
+          </div>
+        </>
       )}
 
       {scanning && (
-        <div>
+        <div className="card" style={{ padding: '14px' }}>
           <Scanner onScan={handleScan} isActive={scanning} />
-          <button
-            className="btn btn-danger"
-            style={{ marginTop: '12px' }}
-            onClick={() => setScanning(false)}
-          >
+          <button type="button" className="btn btn-danger" style={{ marginTop: '14px' }} onClick={() => setScanning(false)}>
             Cancel
           </button>
         </div>
       )}
 
       {result && (
-        <div className="card">
+        <div className="card card-hero">
           {result.type === 'success' ? (
             <>
-              <div className="success-message">Payment Accepted</div>
+              <div className="success-message">Payment accepted</div>
               {result.payload && (
                 <>
                   <div className="amount-display">${result.payload.data.amount.toFixed(2)}</div>
-                  <div className="info-row">
+                  <div className="info-row" style={{ textAlign: 'left' }}>
                     <span className="info-label">Description</span>
-                    <span>{result.payload.data.description}</span>
+                    <span style={{ fontWeight: 600 }}>{result.payload.data.description}</span>
                   </div>
                 </>
               )}
-              <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', textAlign: 'center', marginTop: '8px' }}>
-                {result.message}
-              </p>
+              <p className="muted-caption">{result.message}</p>
             </>
           ) : (
             <div className="error-message">{result.message}</div>
           )}
 
           <button
+            type="button"
             className="btn btn-primary"
-            style={{ marginTop: '16px' }}
+            style={{ marginTop: '18px' }}
             onClick={() => {
               setResult(null);
               setScanning(false);
             }}
           >
-            Scan Another
+            Scan another
           </button>
         </div>
       )}
