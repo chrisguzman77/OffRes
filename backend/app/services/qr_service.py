@@ -18,12 +18,14 @@ def decompress_payload(data: str) -> str:
 
 def generate_qr_code(data: str) -> str:
     compressed = compress_payload(data)
-    
+
+    # Level L minimizes module count for a given payload (here ~v12 vs ~v20 with H).
+    # Fewer, larger modules scan far more reliably from another phone screen.
     qr = qrcode.QRCode(
         version=None,
         error_correction=ERROR_CORRECT_L,
         box_size=12,
-        border=6,
+        border=4,
     )
     qr.add_data(compressed)
     qr.make(fit=True)
