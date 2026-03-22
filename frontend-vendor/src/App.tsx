@@ -54,7 +54,7 @@ export default function App() {
           </span>
         )}
         <span style={{ color: 'var(--accent)', fontSize: '0.75rem', fontWeight: 600 }}>
-          DisasterPi Vendor
+          OFFPay
         </span>
       </div>
 

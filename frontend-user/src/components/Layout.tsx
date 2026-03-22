@@ -28,7 +28,7 @@ export default function Layout({ children, currentPage, onNavigate }: LayoutProp
           color: 'var(--terminal-green)',
           textShadow: 'var(--glow)',
         }}>
-          DisasterPi
+          OFFRes
         </span>
         <span style={{
           fontSize: '0.7rem',
